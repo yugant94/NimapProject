@@ -1,0 +1,50 @@
+﻿@model IEnumerable<NimapProject.Models.Product>
+
+@{
+    ViewBag.Title = "Products";
+}
+
+<h2>Product List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Product ID</th>
+        <th>Product Name</th>
+        <th>Category ID</th>
+        <th>Category Name</th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ProductId</td>
+            <td>@item.ProductName</td>
+            <td>@item.CategoryId</td>
+            <td>@item.Category.CategoryName</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductId }, new { @class = "btn btn-warning btn-sm" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductId }, new { @class = "btn btn-danger btn-sm" })
+            </td>
+        </tr>
+    }
+</table>
+
+
+<div>
+    @if (ViewBag.TotalPages > 1)
+    {
+        <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" class="btn @(ViewBag.CurrentPage == 1 ? "btn-light disabled" : "btn-light")">Previous</a>
+
+        for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { page = i })" class="btn @(i == ViewBag.CurrentPage ? "btn-primary" : "btn-light")">@i</a>
+        }
+
+        <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })" class="btn @(ViewBag.CurrentPage == ViewBag.TotalPages ? "btn-light disabled" : "btn-light")">Next</a>
+    }
+</div>
