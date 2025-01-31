@@ -3,7 +3,7 @@
 1. Product- Index
 ![image alt](https://github.com/yugant94/NimapProject/blob/main/index_Product.png?raw=true)
 
-2. Prodcut- Create new
+2. Product- Create new
 ![image alt](https://github.com/yugant94/NimapProject/blob/main/create_new_product.png?raw=true)
 
 3. Product- Edit
