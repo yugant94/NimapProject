@@ -11,31 +11,22 @@ namespace NimapProject.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
+        }
+
         public ActionResult Index(int page = 1, int pageSize = 10)
         {
-            
-            var totalProducts = db.Products.Count();
-
-           
-            var totalPages = (int)Math.Ceiling(totalProducts / (double)pageSize);
-
-            
-            var products = db.Products
-                             .Include("Category")
-                             .OrderBy(p => p.ProductId)
-                             .Skip((page - 1) * pageSize)
-                             .Take(pageSize)
-                             .ToList();
-
-           
-            ViewBag.TotalPages = totalPages;
+            int totalProducts;
+            var products = _productService.GetProducts(page, pageSize, out totalProducts);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
             ViewBag.CurrentPage = page;
 
             return View(products);
         }
-
-
-
 
 
         public ActionResult Create()
@@ -44,22 +35,19 @@ namespace NimapProject.Controllers
             return View();
         }
 
-        
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(Product product)
         {
-            if (ModelState.IsValid)
+            if (!_productService.AddProduct(product))
             {
-                db.Products.Add(product);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                ModelState.AddModelError("", "Product already exists.");
+                return View(product);
             }
-            ViewBag.Categories = new SelectList(db.Categories, "CategoryId", "CategoryName", product.CategoryId);
-            return View(product);
+            return RedirectToAction("Index");
         }
 
-        
+
         public ActionResult Edit(int id)
         {
             var product = db.Products.Find(id);

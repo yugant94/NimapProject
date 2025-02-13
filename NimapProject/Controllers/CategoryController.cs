@@ -11,9 +11,22 @@ namespace NimapProject.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index()
+        private readonly ICategoryService _categoryService;
+
+        // Constructor injection
+        public CategoryController(ICategoryService categoryService)
         {
-            return View(db.Categories.ToList());
+            _categoryService = categoryService;
+        }
+
+        public ActionResult Index(int page = 1, int pageSize = 10)
+        {
+            int totalCategories;
+            var categories = _categoryService.GetCategories(page, pageSize, out totalCategories);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCategories / pageSize);
+            ViewBag.CurrentPage = page;
+
+            return View(categories);
         }
 
         public ActionResult Create()
@@ -24,14 +37,12 @@ namespace NimapProject.Controllers
         [HttpPost]
         public ActionResult Create(Category category)
         {
-
-            if (ModelState.IsValid)
+            if (!_categoryService.AddCategory(category))
             {
-                db.Categories.Add(category);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                ModelState.AddModelError("", "Category already exists.");
+                return View(category);
             }
-            return View(category);
+            return RedirectToAction("Index");
         }
 
         public ActionResult Edit(int id)

@@ -4,27 +4,26 @@
 }
 
 <h2>Category List</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
-</p>
-
-<table class="table table-bordered">
+<table class="table">
     <tr>
         <th>Category ID</th>
         <th>Category Name</th>
-        <th>Actions</th>
     </tr>
-
     @foreach (var item in Model)
     {
         <tr>
             <td>@item.CategoryId</td>
             <td>@item.CategoryName</td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.CategoryId }, new { @class = "btn btn-warning btn-sm" }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CategoryId }, new { @class = "btn btn-danger btn-sm" })
-            </td>
         </tr>
     }
 </table>
+
+<div>
+    @if (ViewBag.TotalPages > 1)
+    {
+        for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { page = i })" class="btn @(i == ViewBag.CurrentPage ? "btn-primary" : "btn-light")">@i</a>
+        }
+    }
+</div>
