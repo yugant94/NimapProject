@@ -12,8 +12,6 @@ namespace NimapProject.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         private readonly ICategoryService _categoryService;
-
-        // Constructor injection
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
